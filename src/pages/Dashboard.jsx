@@ -1,21 +1,42 @@
-import {useState, useEffect} from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const [appointments, setAppointments] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(()=>{
-    fetch("https://jsonplaceholder.typicode.com/todos").then((response)=>response.json()).then((data)=>{
-        console.log(data);
-        setAppointments(data);
-    })
-    .catch((error)=>console.error("Fetch Failed: ", error));
+  useEffect(() => {
+    fetch("http://localhost:3000/api/events")
+      .then(res => {
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        console.log("Events from /api/events:", data);
+        setEvents(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
 
+  if (loading) return <p>Loading events...</p>;
+  if (error) return <p>Error loading events: {error}</p>;
 
-  return(
+  return (
     <div>
-        <h1>Dashboard</h1>
-        <p>Total appointments: {appointments.length}</p>
+      <h1>Upcoming Events</h1>
+      <ul>
+        {events.map(event => (
+          <li key={event.eventId}>
+            <strong>{event.title}</strong> ({event.category})<br />
+            {event.date} at {event.time} | {event.location}<br />
+            {event.availableSpots} spots left | Hosted by {event.organizer}
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
