@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -9,8 +10,11 @@ app.use(express.json());
 const {Pool} = require("pg");
 
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "campus-events-dev-sercret";
 const bcrypt = require("bcryptjs");
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET missing from .env');
+}
 
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -26,18 +30,18 @@ const pool = new Pool({
 });
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.get("authorization") || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Access token required." });
+    return res.status(401).json({ error: 'No token provided' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err, payload) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(401).json({ message: "Invalid or expired token." });
+      return res.status(403).json({ error: 'Invalid or expired token' });
     }
-    req.user = payload;
+    req.user = user;
     next();
   });
 }
@@ -67,8 +71,8 @@ app.post("/api/login", async (req, res) => {
     }
 
     const accessToken = jwt.sign(
-      { userId: user.user_id, email: user.email },
-      JWT_SECRET,
+      { id: user.user_id, email: user.email },
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -158,5 +162,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`On port:${PORT}`);
 });

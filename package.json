@@ -21,6 +21,7 @@
     "debug": "^4.4.3",
     "deep-is": "^0.1.4",
     "detect-libc": "^2.1.2",
+    "dotenv": "^17.4.2",
     "electron-to-chromium": "^1.5.387",
     "escalade": "^3.2.0",
     "escape-string-regexp": "^4.0.0",

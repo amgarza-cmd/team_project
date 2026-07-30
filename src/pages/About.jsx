@@ -7,7 +7,7 @@ export default function About() {
       <ul>
         <li>Marcelo - Team member</li>
         <li>CarvingRiper386 - Team member</li>
-        <li>timothyjg123 - Team member</li>
+        <li>Timothy Grix III - Team member</li>
       </ul>
     </div>
   );

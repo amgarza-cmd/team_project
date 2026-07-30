@@ -4,16 +4,19 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Reserve from "./pages/Reserve";
+import Login from "./pages/Login";
+import ProtectedRoute from './pages/ProtectedRoute';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/reserve" element={<Reserve />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
+        <Route path="/reserve" element={<ProtectedRoute><Reserve /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
