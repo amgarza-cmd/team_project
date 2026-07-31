@@ -6,6 +6,7 @@ import About from "./pages/About";
 import Reserve from "./pages/Reserve";
 import Login from "./pages/Login";
 import ProtectedRoute from './pages/ProtectedRoute';
+import MyReservations from "./pages/MyReservations";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
         <Route path="/reserve" element={<ProtectedRoute><Reserve /></ProtectedRoute>} />
+        <Route path="/my-reservations" element={<ProtectedRoute> <MyReservations /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

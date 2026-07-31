@@ -147,13 +147,29 @@ app.post("/api/reservations", async (req, res) => {
 app.get("/api/reservations", authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT reservation_id AS "reservationId", event_id AS "eventId", name, email, tickets
-       FROM reservations ORDER BY reservation_id DESC`
+      `SELECT
+          r.reservation_id AS "reservationId",
+          r.event_id AS "eventId",
+          e.title AS "eventTitle",
+          r.name,
+          r.email,
+          r.tickets
+       FROM reservations r
+       INNER JOIN events e
+         ON e.event_id = r.event_id
+       ORDER BY r.reservation_id DESC`
     );
-    res.json({ requestedBy: req.user.email, reservations: result.rows });
+
+    res.json({
+      requestedBy: req.user.email,
+      reservations: result.rows,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Could not load reservations." });
+
+    res.status(500).json({
+      message: "Could not load reservations.",
+    });
   }
 });
 
