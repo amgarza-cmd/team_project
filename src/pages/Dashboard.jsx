@@ -165,7 +165,7 @@ export default function Dashboard() {
                     </span>
 
                     <span className="event-id">
-                      Event #{event.eventId}
+                      Event ID = {event.eventId}
                     </span>
                   </div>
 
