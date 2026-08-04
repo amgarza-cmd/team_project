@@ -13,7 +13,7 @@ export default function Dashboard() {
 
     async function loadEvents() {
       try {
-        const response = await fetch("http://localhost:3000/api/events", {
+        const response = await fetch("/api/events", {
           signal: controller.signal,
         });
 

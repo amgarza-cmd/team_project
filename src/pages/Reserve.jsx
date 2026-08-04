@@ -31,7 +31,7 @@ export default function Reserve() {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/reservations",
+        "/api/reservations",
         {
           method: "POST",
           headers: {

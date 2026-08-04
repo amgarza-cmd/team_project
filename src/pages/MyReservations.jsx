@@ -15,7 +15,7 @@ export default function MyReservations() {
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/reservations",
+          "/api/reservations",
           {
             headers: {
               Authorization: `Bearer ${token}`,

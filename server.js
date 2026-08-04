@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,13 +22,14 @@ app.use((req, res, next) => {
   next();
 });
 
-const pool = new Pool({
+const pool = new Pool(
+  process.env.DATABASE_URL ? { connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } } : {
   host: "localhost",
   port: 5432,
   user: "postgres",
   password: "postgres",
   database: "campus_events",
-});
+  });
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -173,8 +175,14 @@ app.get("/api/reservations", authenticateToken, async (req, res) => {
   }
 });
 
-app.use((req, res) => {
+app.use("/api", (req, res) => {
   res.status(404).json({ message: `No route matches ${req.method} ${req.originalUrl}` });
+});
+
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("/{*splat}", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.listen(PORT, () => {
