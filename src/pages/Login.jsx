@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { emailDomainOk } from "../emailRequirements/emailDomain.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,12 @@ export default function Login() {
     event.preventDefault();
 
     setError("");
+
+  if (!emailDomainOk(email)) {
+      setError("Please use an approved email domain (Example: gmail.com or islander.edu).");
+      return;
+    }
+
     setLoading(true);
 
     try {

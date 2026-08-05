@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Reserve.css";
+import { emailDomainOk } from "../emailRequirements/emailDomain.js";
 
 export default function Reserve() {
   const [formData, setFormData] = useState({
@@ -27,6 +28,12 @@ export default function Reserve() {
 
     setMessage("");
     setIsSuccess(false);
+
+  if (!emailDomainOk(formData.email)) {
+      setMessage("Please use an approved email domain (Example: gmail.com or islander.edu).");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {

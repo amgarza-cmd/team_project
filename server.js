@@ -13,6 +13,16 @@ const {Pool} = require("pg");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+const emailDomains = require("./src/emailRequirements/emailDomain.json");
+
+function emailDomainOk(email) {
+  if (typeof email !== "string") return false;
+  const at = email.lastIndexOf("@");
+  if (at < 1 || at === email.length - 1) return false;
+  const domain = email.slice(at + 1).trim().toLowerCase();
+  return emailDomains.allowed.includes(domain);
+}
+
 if (!process.env.JWT_SECRET) {
   throw new Error('JWT_SECRET missing from .env');
 }
@@ -55,10 +65,16 @@ app.post("/api/login", async (req, res) => {
     return res.status(400).json({ message: "Email and password are required." });
   }
 
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!emailDomainOk(normalizedEmail)){
+    return res.status(400).json({message: "Email must have common email domain."});
+  }
+
   try {
     const result = await pool.query(
       "SELECT user_id, email, password_hash FROM users WHERE email = $1",
-      [email]
+      [normalizedEmail]
     );
 
     if (result.rowCount === 0) {
@@ -108,6 +124,12 @@ app.post("/api/reservations", async (req, res) => {
     return res.status(400).json({ message: "eventId, name, email, and tickets are all required." });
   }
 
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!emailDomainOk(normalizedEmail)){
+    return res.status(400).json({message: "Email must have common email domain."});
+  }
+
   try {
     const eventResult = await pool.query(
       "SELECT title, available_spots FROM events WHERE event_id = $1",
@@ -128,7 +150,7 @@ app.post("/api/reservations", async (req, res) => {
       `INSERT INTO reservations (event_id, name, email, tickets)
        VALUES ($1, $2, $3, $4)
        RETURNING reservation_id AS "reservationId", event_id AS "eventId", name, email, tickets`,
-      [eventId, name, email, tickets]
+      [eventId, name, normalizedEmail, tickets]
     );
 
     await pool.query(
