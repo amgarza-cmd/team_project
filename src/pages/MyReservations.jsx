@@ -15,7 +15,7 @@ export default function MyReservations() {
 
       try {
         const response = await fetch(
-          "/api/reservations",
+          `${import.meta.env.VITE_API_URL}/api/reservations`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

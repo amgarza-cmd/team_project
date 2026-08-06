@@ -13,7 +13,7 @@ export default function Dashboard() {
 
     async function loadEvents() {
       try {
-        const response = await fetch("/api/events", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events`, {
           signal: controller.signal,
         });
 
