@@ -6,7 +6,7 @@ Web app for TAMUCC students to browse campus events and reserve spots.
 
 ## Overview
 
-One place to find and reserve campus events instead of hunting through emails and group chats. Students browse, filter, and book. Organizers see who reserved.
+One place to find and reserve campus events instead of hunting through emails and group chats. Users log in, browse events, book a spot, and see their reservations.
 
 **Live:**
 - Frontend: https://team-project-nu-nine.vercel.app/
@@ -57,9 +57,15 @@ Bad requests return 400, missing events 404, capacity conflicts 409, missing/inv
 
 ## Roles and Workflows
 
-**Guest:** Browse Dashboard, submit Reserve form. No login needed.
+The app has one role: an authenticated user (organizer).
 
-**Logged-in user:** Log in with email and password, get a JWT, view My Reservations.
+**Workflow:**
+1. Log in with email and password on the Login page.
+2. Backend verifies credentials and returns a JWT (valid 1 hour).
+3. Browse events on the Dashboard.
+4. Submit the Reserve form to book a spot. Backend validates capacity and creates the reservation.
+5. View all reservations on the My Reservations page (JWT-protected).
+6. Logout clears the token.
 
 Demo login for the deployed site:
 - Email: `organizer@islander.edu`
